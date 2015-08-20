@@ -1,13 +1,12 @@
 package control;
 
+import data.*;
+import ui.*;
+
 public class Driver {
 
-	/**
-	 * @param args
-	 */
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
+		AdminUiWindow.getInstance(new Admin());
 	}
 
 }

@@ -1,5 +1,5 @@
 package data;
 
-public class Admin {
+public class Admin implements User {
 
 }
