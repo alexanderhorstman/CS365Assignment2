@@ -1,5 +1,6 @@
 package ui;
 
+import data.Admin;
 import data.User;
 
 import javax.swing.*;
@@ -10,6 +11,7 @@ import java.awt.event.*;
 public class AdminUiWindow extends JFrame implements UiWindow {
 	
 	private static AdminUiWindow adminWindow;
+	private static Admin admin;
 	
 	private AdminUiWindow() {
 		createWindow();
@@ -17,6 +19,7 @@ public class AdminUiWindow extends JFrame implements UiWindow {
 	
 	public static UiWindow getInstance(User user) {
 		if(adminWindow == null) {
+			admin = (Admin) user;
 			adminWindow = new AdminUiWindow();
 		}
 		return adminWindow;
@@ -114,6 +117,10 @@ public class AdminUiWindow extends JFrame implements UiWindow {
 		
 		mainWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		mainWindow.setVisible(true);
+	}
+	
+	public void redraw() {
+		//update the user list
 	}
 
 }
