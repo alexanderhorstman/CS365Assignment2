@@ -1,6 +1,8 @@
 package ui;
 
 import data.Admin;
+import data.Message;
+import data.NormalUser;
 import data.User;
 
 import javax.swing.*;
@@ -57,7 +59,12 @@ public class AdminUiWindow extends JFrame implements UiWindow {
 		addUserPanel.add(userId);
 		
 		Button addUserButton = new Button("Add User");
-		addUserButton.addActionListener(new ButtonListener());
+		addUserButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				
+			}			
+		});
 		addUserButton.setPreferredSize(new Dimension(mainWindow.getWidth() / 4 - 20, 30));
 		addUserPanel.add(addUserButton);
 		uiComponentPanel.add(addUserPanel);
@@ -71,7 +78,12 @@ public class AdminUiWindow extends JFrame implements UiWindow {
 		addGroupPanel.add(groupId);
 		
 		Button addGroupButton = new Button("Add Group");
-		addGroupButton.addActionListener(new ButtonListener());
+		addGroupButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				
+			}			
+		});
 		addGroupButton.setPreferredSize(new Dimension(mainWindow.getWidth() / 4 - 20, 30));
 		addGroupPanel.add(addGroupButton);
 		uiComponentPanel.add(addGroupPanel);
@@ -80,7 +92,12 @@ public class AdminUiWindow extends JFrame implements UiWindow {
 		userViewPanel.setLayout(new FlowLayout());
 		
 		Button openUserViewButton = new Button("Open User View");
-		openUserViewButton.addActionListener(new ButtonListener());
+		openUserViewButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				
+			}			
+		});
 		openUserViewButton.setPreferredSize(new Dimension(mainWindow.getWidth() / 2 - 30, 30));
 		userViewPanel.add(openUserViewButton);
 		uiComponentPanel.add(userViewPanel);
@@ -90,12 +107,22 @@ public class AdminUiWindow extends JFrame implements UiWindow {
 		
 		Button userTotalButton = new Button("Show User Total");
 		userTotalButton.setPreferredSize(new Dimension(mainWindow.getWidth() / 4 - 20, 30));
-		userTotalButton.addActionListener(new ButtonListener());
+		userTotalButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				
+			}			
+		});
 		adminButtons1.add(userTotalButton);
 		
 		Button groupTotalButton = new Button("Show Group Total");
 		groupTotalButton.setPreferredSize(new Dimension(mainWindow.getWidth() / 4 - 20, 30));
-		groupTotalButton.addActionListener(new ButtonListener());
+		groupTotalButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				
+			}			
+		});
 		adminButtons1.add(groupTotalButton);
 		uiComponentPanel.add(adminButtons1);
 		
@@ -104,12 +131,22 @@ public class AdminUiWindow extends JFrame implements UiWindow {
 		
 		Button messageTotalButton = new Button("Show Message Total");
 		messageTotalButton.setPreferredSize(new Dimension(mainWindow.getWidth() / 4 - 20, 30));
-		messageTotalButton.addActionListener(new ButtonListener());
+		messageTotalButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				
+			}			
+		});
 		adminButtons2.add(messageTotalButton);
 		
 		Button positiveMessagePercentageButton = new Button("Positive Message %");
 		positiveMessagePercentageButton.setPreferredSize(new Dimension(mainWindow.getWidth() / 4 - 20, 30));
-		positiveMessagePercentageButton.addActionListener(new ButtonListener());
+		positiveMessagePercentageButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				
+			}			
+		});
 		adminButtons2.add(positiveMessagePercentageButton);
 		uiComponentPanel.add(adminButtons2);
 		

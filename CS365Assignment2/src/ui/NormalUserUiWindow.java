@@ -1,8 +1,15 @@
 package ui;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.*;
 
+import java.util.List;
+
+import data.Admin;
+import data.Message;
 import data.NormalUser;
 import data.User;
 
@@ -12,15 +19,17 @@ public class NormalUserUiWindow implements UiWindow {
 	private DefaultListModel<String> followingModel;
 	private DefaultListModel<String> newsFeedModel;
 	private JFrame mainWindow;
+	private final Admin admin;
 	
-	public NormalUserUiWindow(User user) {
+	public NormalUserUiWindow(User user, Admin admin) {
 		this.user = user;
+		this.admin = admin;
 		createWindow();
 	}
 	
 	public UiWindow getInstance(User user) {
 		this.user = user;
-		return new NormalUserUiWindow(user);
+		return new NormalUserUiWindow(user, admin);
 	}
 	
 	private void createWindow() {
@@ -34,13 +43,34 @@ public class NormalUserUiWindow implements UiWindow {
 		JPanel followUserPanel = new JPanel();
 		followUserPanel.setLayout(new FlowLayout());
 		
-		JTextField userId = new JTextField();
+		final JTextField userId = new JTextField();
 		userId.setText("User ID");
 		userId.setPreferredSize(new Dimension(mainWindow.getWidth() / 2 - 20, 30));
 		followUserPanel.add(userId);
 		
 		Button followUserButton = new Button("Follow User");
-		followUserButton.addActionListener(new ButtonListener());
+		followUserButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				boolean validUserName = false;
+				List<User> users = admin.getUsers();
+				for(User u: users) {
+					System.out.println(u.getName());
+					if(u.getName().equals(userId.getText())) {
+						validUserName = true;
+					}
+				}
+				if(validUserName) {
+					
+				}
+				else {
+					//display a error dialog 
+					JOptionPane.showMessageDialog(mainWindow, 
+							userId.getText() + " could not be found. Enter the name of a current user.");
+				}
+				redraw();
+			}
+		});
 		followUserButton.setPreferredSize(new Dimension(mainWindow.getWidth() / 2 - 20, 30));
 		followUserPanel.add(followUserButton);
 		mainWindow.add(followUserPanel);
@@ -63,13 +93,19 @@ public class NormalUserUiWindow implements UiWindow {
 		JPanel tweetMessagePanel = new JPanel();
 		tweetMessagePanel.setLayout(new FlowLayout());
 		
-		JTextField message = new JTextField();
+		final JTextField message = new JTextField();
 		message.setText("TweetMessage");
 		message.setPreferredSize(new Dimension(mainWindow.getWidth() / 2 - 20, 30));
 		tweetMessagePanel.add(message);
 		
 		Button tweetMessageButton = new Button("Post Tweet");
-		tweetMessageButton.addActionListener(new ButtonListener());
+		tweetMessageButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				((NormalUser) user).post(new Message(user, message.getText()));
+				redraw();
+			}			
+		});
 		tweetMessageButton.setPreferredSize(new Dimension(mainWindow.getWidth() / 2 - 20, 30));
 		tweetMessagePanel.add(tweetMessageButton);
 		mainWindow.add(tweetMessagePanel);

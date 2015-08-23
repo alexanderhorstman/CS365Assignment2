@@ -5,16 +5,17 @@ import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
-public class NormalUser extends Observable implements User, Observer{
+public class NormalUser extends Observable implements SingleUser{
 	
 	private String name;
 	private List<User> followers = new ArrayList<User>();
 	private List<User> following = new ArrayList<User>();
 	private List<Message> newsFeed = new ArrayList<Message>();
 	
-	public NormalUser(String name) {
+	public NormalUser(String name, Admin admin) {
 		this.name = name;
 		addObserver(this);
+		addObserver(admin);
 	}
 
 	public String getName() {
