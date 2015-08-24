@@ -1,5 +1,9 @@
 package control;
 
-public interface AdminVisitor {
+import data.Admin;
+
+public abstract class AdminVisitor {
+	
+	public abstract void visitAdmin(Admin admin);
 
 }

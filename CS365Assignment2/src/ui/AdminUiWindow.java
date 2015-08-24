@@ -1,10 +1,6 @@
 package ui;
 
-import data.Admin;
-import data.Message;
-import data.NormalUser;
-import data.User;
-import data.UserGroup;
+import data.*;
 
 import java.util.List;
 
@@ -12,6 +8,8 @@ import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.*;
+
+import control.*;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -23,6 +21,7 @@ public class AdminUiWindow extends JFrame implements UiWindow {
 	private DefaultMutableTreeNode selectedNode;
 	private JTree updateTree;
 	final JFrame mainWindow = new JFrame();
+	private List<NormalUserUiWindow> userWindows;
 	
 	private AdminUiWindow() {
 		createWindow();
@@ -36,7 +35,7 @@ public class AdminUiWindow extends JFrame implements UiWindow {
 		return adminWindow;
 	}
 	
-	public void createWindow() {
+	private void createWindow() {
 		//create all ui elements for the admin
 		mainWindow.setSize(600, 500);
 		mainWindow.setLocationRelativeTo(null);
@@ -217,7 +216,9 @@ public class AdminUiWindow extends JFrame implements UiWindow {
 				List<User> users = admin.getUsers();
 				for(User u: users) {
 					if(u.getName().equals(selectedNode.toString())) {
-						NormalUserUiWindow.getInstance(u);
+						NormalUserUiWindow newWindow = new NormalUserUiWindow(u, admin);
+						((NormalUser) u).setUi(newWindow);
+						//userWindows.add(newWindow);
 					}
 				}
 			}			
@@ -234,7 +235,9 @@ public class AdminUiWindow extends JFrame implements UiWindow {
 		userTotalButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				
+				CheckUserCountVisitor visitor = new CheckUserCountVisitor();
+				admin.accept(visitor);
+				JOptionPane.showMessageDialog(mainWindow, visitor.getUserCount() + " users total.");
 			}			
 		});
 		adminButtons1.add(userTotalButton);
@@ -244,7 +247,9 @@ public class AdminUiWindow extends JFrame implements UiWindow {
 		groupTotalButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				
+				CheckGroupCountVisitor visitor = new CheckGroupCountVisitor();
+				admin.accept(visitor);
+				JOptionPane.showMessageDialog(mainWindow, visitor.getGroupCount() + " groups total.");
 			}			
 		});
 		adminButtons1.add(groupTotalButton);
@@ -258,7 +263,9 @@ public class AdminUiWindow extends JFrame implements UiWindow {
 		messageTotalButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				
+				CheckMessageTotalVisitor visitor = new CheckMessageTotalVisitor();
+				admin.accept(visitor);
+				JOptionPane.showMessageDialog(mainWindow, visitor.getMessageCount() + " messages total.");
 			}			
 		});
 		adminButtons2.add(messageTotalButton);
@@ -268,7 +275,9 @@ public class AdminUiWindow extends JFrame implements UiWindow {
 		positiveMessagePercentageButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				
+				CheckPositiveMessageVisitor visitor = new CheckPositiveMessageVisitor();
+				admin.accept(visitor);
+				JOptionPane.showMessageDialog(mainWindow, visitor.getPossitiveMessagePercentage() + "% positive messages.");
 			}			
 		});
 		adminButtons2.add(positiveMessagePercentageButton);

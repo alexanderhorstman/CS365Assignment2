@@ -15,22 +15,19 @@ import data.User;
 
 public class NormalUserUiWindow implements UiWindow {
 	
-	private static User user;
+	private static NormalUser user;
 	private DefaultListModel<String> followingModel;
 	private DefaultListModel<String> newsFeedModel;
 	private JFrame mainWindow;
-	//private static Admin admin;
+	private static Admin admin;
 	
-	private NormalUserUiWindow(User newUser, Admin admin1) {
-		user = newUser;
+	public NormalUserUiWindow(User newUser, Admin admin1) {
+		user = (NormalUser) newUser;
 		admin = admin1;
 		createWindow();
 	}
 	
-	public static UiWindow getInstance(User newUser) {
-		user = newUser;
-		return new NormalUserUiWindow(user, admin);
-	}
+	
 	
 	private void createWindow() {
 		//create all ui elements for the user
@@ -55,15 +52,13 @@ public class NormalUserUiWindow implements UiWindow {
 				boolean validUserName = false;
 				List<User> users = admin.getUsers();
 				for(User u: users) {
-					System.out.println(u.getName());
 					if(u.getName().equals(userId.getText())) {
 						validUserName = true;
+						user.follow((NormalUser) u);
+						userId.setText("");
 					}
 				}
-				if(validUserName) {
-					
-				}
-				else {
+				 if(!validUserName && !userId.getText().equals("")) {
 					//display a error dialog 
 					JOptionPane.showMessageDialog(mainWindow, 
 							userId.getText() + " could not be found. Enter the name of a current user.");
@@ -104,6 +99,7 @@ public class NormalUserUiWindow implements UiWindow {
 			public void actionPerformed(ActionEvent arg0) {
 				((NormalUser) user).post(new Message(user, message.getText()));
 				redraw();
+				System.out.println("Post test. User: " + user.getName());
 			}			
 		});
 		tweetMessageButton.setPreferredSize(new Dimension(mainWindow.getWidth() / 2 - 20, 30));

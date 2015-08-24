@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 
+import control.AdminVisitor;
+
 public class Admin implements AdminUser {
 	
 	private List<User> users = new ArrayList<User>();
@@ -54,7 +56,10 @@ public class Admin implements AdminUser {
 		if(arg instanceof Message) {
 			messages.add(0, (Message) arg);
 		}
-		
+	}
+	
+	public void accept(AdminVisitor v) {
+		v.visitAdmin(this);
 	}
  
 }
