@@ -1,5 +1,6 @@
 package data;
 
+//class that contains a message and the user that posted the message
 public class Message {
 	
 	private String message;
@@ -18,6 +19,7 @@ public class Message {
 		return user;
 	}
 	
+	//returns a string in the form "-User: The message that was posted."
 	public String toString() {
 		return "- " + user.getName() + ": " + message;
 	}

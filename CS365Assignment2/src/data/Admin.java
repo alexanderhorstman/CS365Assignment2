@@ -8,17 +8,19 @@ import control.AdminVisitor;
 
 public class Admin implements AdminUser {
 	
-	private List<User> users = new ArrayList<User>();
-	private List<UserGroup> groups = new ArrayList<UserGroup>();
-	private List<Message> messages = new ArrayList<Message>(); 
+	private List<User> users = new ArrayList<User>(); //list of all users
+	private List<UserGroup> groups = new ArrayList<UserGroup>(); //list of all groups
+	private List<Message> messages = new ArrayList<Message>();  //list of all messages posted
 	
-	private String name = "Admin";
-	private static Admin admin;
+	private String name = "Admin"; //singleton name
+	private static Admin admin; //reference to the singleton
 	
 	private Admin() {
+		//adds a group that serves as the root of all other groups and users
 		groups.add(new UserGroup("Root"));
 	}
 	
+	//accessor method to obtain an instance of the Admin class
 	public static AdminUser getInstance() {
 		if(admin == null) {
 			admin = new Admin();
@@ -53,6 +55,7 @@ public class Admin implements AdminUser {
 	@Override
 	//updates the overall message list with the Message arg
 	public void update(Observable user, Object arg) {
+		//if "arg" is a Message, add the message to the list of messages
 		if(arg instanceof Message) {
 			messages.add(0, (Message) arg);
 		}

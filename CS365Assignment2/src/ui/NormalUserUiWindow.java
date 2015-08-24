@@ -13,21 +13,21 @@ import data.Message;
 import data.NormalUser;
 import data.User;
 
+//class that builds the UI window for a NormalUser
 public class NormalUserUiWindow implements UiWindow {
 	
-	private static NormalUser user;
-	private DefaultListModel<String> followingModel;
-	private DefaultListModel<String> newsFeedModel;
-	private JFrame mainWindow;
-	private static Admin admin;
+	private static NormalUser user; //the user that the window is created for
+	private DefaultListModel<String> followingModel; //list model that holds the information for the users 
+													 //that this user is following
+	private DefaultListModel<String> newsFeedModel; //list model that holds the information for the user's news feed
+	private JFrame mainWindow; //the window that holds the UI elements for the User View
+	private static Admin admin; //the admin that currently has the User View open
 	
 	public NormalUserUiWindow(User newUser, Admin admin1) {
 		user = (NormalUser) newUser;
 		admin = admin1;
 		createWindow();
 	}
-	
-	
 	
 	private void createWindow() {
 		//create all ui elements for the user
@@ -37,6 +37,7 @@ public class NormalUserUiWindow implements UiWindow {
 		mainWindow.setTitle(user.getName() + "'s News Feed");
 		mainWindow.setLayout(new FlowLayout());
 		
+		//create the text box and button to follow a user
 		JPanel followUserPanel = new JPanel();
 		followUserPanel.setLayout(new FlowLayout());
 		
@@ -70,12 +71,16 @@ public class NormalUserUiWindow implements UiWindow {
 		followUserPanel.add(followUserButton);
 		mainWindow.add(followUserPanel);
 
+		//create the list of users that this user is following
 		JList<String> followingList = new JList<String>();
 		followingModel = new DefaultListModel<String>();
 		followingList.setModel(followingModel);
 		followingModel.addElement("Currently Following: ");
 		if(((NormalUser) user).getFollowing().size() > 0) {
 			for(int i = 0; i < ((NormalUser) user).getFollowing().size(); i++) {
+				//NOTE: each user is following themselves to allow for automatic updates to the UI window
+				//the following line checks to make sure that the own user's name does not get displayed 
+				//as a user that they are following
 				if(!user.getName().equals(((NormalUser) user).getFollowing().get(i).getName())) {
 					followingModel.addElement(((NormalUser) user).getFollowing().get(i).getName());
 				}
@@ -85,6 +90,7 @@ public class NormalUserUiWindow implements UiWindow {
 		listScroller.setPreferredSize(new Dimension(mainWindow.getWidth() - 20 , 120));
 		mainWindow.add(listScroller);
 		
+		//create the text box and button for posting a message
 		JPanel tweetMessagePanel = new JPanel();
 		tweetMessagePanel.setLayout(new FlowLayout());
 		
@@ -106,6 +112,7 @@ public class NormalUserUiWindow implements UiWindow {
 		tweetMessagePanel.add(tweetMessageButton);
 		mainWindow.add(tweetMessagePanel);
 		
+		//creates the list for the user's news feed
 		JList<String> newsFeedList = new JList<String>();
 		newsFeedModel = new DefaultListModel<String>();
 		newsFeedList.setModel(newsFeedModel);
@@ -122,12 +129,15 @@ public class NormalUserUiWindow implements UiWindow {
 	}
 	
 	public void redraw() {
-		//repopulate the two lists
+		//repopulate the following list and the news feed
 		followingModel.clear();
 		newsFeedModel.clear();
 		followingModel.addElement("Currently Following: ");
 		if(((NormalUser) user).getFollowing().size() > 0) {
 			for(int i = 0; i < ((NormalUser) user).getFollowing().size(); i++) {
+				//NOTE: each user is following themselves to allow for automatic updates to the UI window
+				//the following line checks to make sure that the own user's name does not get displayed 
+				//as a user that they are following
 				if(!user.getName().equals(((NormalUser) user).getFollowing().get(i).getName())) {
 					followingModel.addElement(((NormalUser) user).getFollowing().get(i).getName());
 				}
@@ -137,7 +147,7 @@ public class NormalUserUiWindow implements UiWindow {
 		for(int i = 0; i < ((NormalUser) user).getNewsFeed().size(); i++) {
 			newsFeedModel.addElement(((NormalUser) user).getNewsFeed().get(i).toString());
 		}
-
+		//refreshes the window with the updated information
 		mainWindow.revalidate();
 	}
 

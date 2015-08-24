@@ -5,9 +5,13 @@ import java.util.List;
 import data.Admin;
 import data.Message;
 
+//class that checks to see what percentage of the all of the messages 
+//that have been posted are positive messages. 
 public class CheckPositiveMessageVisitor extends AdminVisitor { 
 	
-	private String[] positiveMessages = {"good", "great", "fantastic", "awesome"};
+	private String[] positiveMessages = {"good", "great", "fantastic", "awesome"}; //list of words that would
+																				   //denote a message as being
+																				   //positive.
 	private double positiveCount = 0;
 	private double totalMessages;
 
