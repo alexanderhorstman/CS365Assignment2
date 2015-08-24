@@ -4,8 +4,14 @@ import data.Admin;
 import data.Message;
 import data.NormalUser;
 import data.User;
+import data.UserGroup;
+
+import java.util.List;
 
 import javax.swing.*;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
+import javax.swing.tree.*;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -14,6 +20,9 @@ public class AdminUiWindow extends JFrame implements UiWindow {
 	
 	private static AdminUiWindow adminWindow;
 	private static Admin admin;
+	private DefaultMutableTreeNode selectedNode;
+	private JTree updateTree;
+	final JFrame mainWindow = new JFrame();
 	
 	private AdminUiWindow() {
 		createWindow();
@@ -29,23 +38,27 @@ public class AdminUiWindow extends JFrame implements UiWindow {
 	
 	public void createWindow() {
 		//create all ui elements for the admin
-		JFrame mainWindow = new JFrame();
 		mainWindow.setSize(600, 500);
 		mainWindow.setLocationRelativeTo(null);
 		mainWindow.setTitle("Admin Control Panel");
 		mainWindow.setLayout(new BorderLayout());
-		//create user list
+		//create user tree
 		
-		//temp///////////////////////////////////////////////////////////
-		String[] tempArray = {"-Tim", "    -John",  "        -Ben"};	
-		//temp///////////////////////////////////////////////////////////
+		DefaultMutableTreeNode root = new DefaultMutableTreeNode("Root");
+		final JTree userTree = new JTree(root);
+		updateTree = userTree;
+		userTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+		userTree.setPreferredSize(new Dimension((mainWindow.getWidth() / 2) - 30, mainWindow.getHeight()));
+		userTree.addTreeSelectionListener(new TreeSelectionListener() {
+			@Override
+			public void valueChanged(TreeSelectionEvent arg0) {
+				selectedNode = (DefaultMutableTreeNode) userTree.getLastSelectedPathComponent();
+			}		
+		});
+		JScrollPane treeScroller = new JScrollPane(userTree);
 		
-		JList<String> userList = new JList<String>(tempArray);
-		//make list scrollable
-		JScrollPane listScroller = new JScrollPane(userList);
-		listScroller.setPreferredSize(new Dimension((mainWindow.getWidth() / 2), mainWindow.getWidth() - 30));
 		//add list to left side of the main window
-		mainWindow.add(listScroller, BorderLayout.LINE_START);
+		mainWindow.add(treeScroller, BorderLayout.LINE_START);
 		//create user and group add text boxes and buttons
 		JPanel uiComponentPanel = new JPanel();
 		uiComponentPanel.setLayout(new BoxLayout(uiComponentPanel, BoxLayout.Y_AXIS));
@@ -53,7 +66,7 @@ public class AdminUiWindow extends JFrame implements UiWindow {
 		JPanel addUserPanel = new JPanel();
 		addUserPanel.setLayout(new FlowLayout());
 		
-		JTextField userId = new JTextField();
+		final JTextField userId = new JTextField();
 		userId.setText("User ID");
 		userId.setPreferredSize(new Dimension(mainWindow.getWidth() / 4 - 20, 30));
 		addUserPanel.add(userId);
@@ -61,8 +74,61 @@ public class AdminUiWindow extends JFrame implements UiWindow {
 		Button addUserButton = new Button("Add User");
 		addUserButton.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				
+			public void actionPerformed(ActionEvent arg0) {				
+				if(selectedNode != null) {
+					//will always be the Root directory
+					UserGroup groupToAddTo = admin.getGroups().get(0);
+					boolean validUser = true;
+					//check to see that the new user is not already in the list
+					List<User> users = admin.getUsers();
+					String newUser = userId.getText();
+					for(User u: users) {
+						if(newUser.equals(u.getName())) {
+							validUser = false;
+						}
+					}
+					//add the new user to the appropriate group
+					if(validUser && selectedNode.toString().equals("Root")) {
+						DefaultMutableTreeNode node = new DefaultMutableTreeNode(userId.getText());
+						selectedNode.add(node);
+						userTree.makeVisible(new TreePath(node.getPath()));
+						admin.addUser(new NormalUser(userId.getText(), admin));
+						groupToAddTo.addUser(new NormalUser(userId.getText(), admin));
+					}
+					else if(validUser && !selectedNode.toString().equals("Root")) {
+						boolean addToSelected = false;
+						//check to see if current selected is a group
+						List<UserGroup> groups = admin.getGroups();
+						for(UserGroup u: groups) {
+							if(selectedNode.toString().equals(u.getName())) {
+								addToSelected = true;
+								groupToAddTo = u;								
+							}
+						}
+						//if it is a group, add user to that group
+						//if not add the user to the selected parent's group
+						if(addToSelected) {
+							DefaultMutableTreeNode node = new DefaultMutableTreeNode(userId.getText());
+							selectedNode.add(node);
+							userTree.makeVisible(new TreePath(node.getPath()));
+						}
+						else {
+							DefaultMutableTreeNode node = new DefaultMutableTreeNode(userId.getText());
+							((DefaultMutableTreeNode) selectedNode.getParent()).add(node);
+							userTree.makeVisible(new TreePath(node.getPath()));
+						}
+						admin.addUser(new NormalUser(userId.getText(), admin));
+						groupToAddTo.addUser(new NormalUser(userId.getText(), admin));
+					}
+					else {
+						JOptionPane.showMessageDialog(mainWindow, 
+								userId.getText() + " is already a user.");
+					}
+				}
+				else {
+					JOptionPane.showMessageDialog(mainWindow, "Select a group to add the user to.");
+				}
+				redraw();
 			}			
 		});
 		addUserButton.setPreferredSize(new Dimension(mainWindow.getWidth() / 4 - 20, 30));
@@ -72,7 +138,7 @@ public class AdminUiWindow extends JFrame implements UiWindow {
 		JPanel addGroupPanel = new JPanel();
 		addGroupPanel.setLayout(new FlowLayout());
 		
-		JTextField groupId = new JTextField();
+		final JTextField groupId = new JTextField();
 		groupId.setText("Group ID");
 		groupId.setPreferredSize(new Dimension(mainWindow.getWidth() / 4 - 20, 30));
 		addGroupPanel.add(groupId);
@@ -81,7 +147,60 @@ public class AdminUiWindow extends JFrame implements UiWindow {
 		addGroupButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				
+				if(selectedNode != null) {
+					//will always be the Root directory
+					UserGroup groupToAddTo = admin.getGroups().get(0);
+					boolean validGroup = true;
+					//check to see that the new group is not already in the list
+					List<UserGroup> groups = admin.getGroups();
+					String newGroup = groupId.getText();
+					for(UserGroup u: groups) {
+						if(newGroup.equals(u.getName())) {
+							validGroup = false;
+						}
+					}
+					//add the new group to the appropriate group
+					if(validGroup && selectedNode.toString().equals("Root")) {
+						DefaultMutableTreeNode node = new DefaultMutableTreeNode(groupId.getText());
+						selectedNode.add(node);
+						userTree.makeVisible(new TreePath(node.getPath()));
+						admin.addGroup(new UserGroup(groupId.getText()));
+						groupToAddTo.addGroup(new UserGroup(groupId.getText()));
+					}
+					else if(validGroup && !selectedNode.toString().equals("Root")) {
+						boolean addToSelected = false;
+						//check to see if current selected is a group
+						for(UserGroup u: groups) {
+							if(selectedNode.toString().equals(u.getName())) {
+								addToSelected = true;
+								groupToAddTo = u;
+							}
+						}
+						//if it is a group, add new group to that group
+						//if not add the new group to the selected parent's group
+						if(addToSelected) {
+							DefaultMutableTreeNode node = new DefaultMutableTreeNode(groupId.getText());
+							selectedNode.add(node);
+							userTree.makeVisible(new TreePath(node.getPath()));
+							
+						}
+						else {
+							DefaultMutableTreeNode node = new DefaultMutableTreeNode(groupId.getText());
+							((DefaultMutableTreeNode) selectedNode.getParent()).add(node);
+							userTree.makeVisible(new TreePath(node.getPath()));
+						}
+						admin.addGroup(new UserGroup(groupId.getText()));
+						groupToAddTo.addGroup(new UserGroup(groupId.getText()));
+					}
+					else {
+						JOptionPane.showMessageDialog(mainWindow, 
+								groupId.getText() + " is already a group.");
+					}
+				}
+				else {
+					JOptionPane.showMessageDialog(mainWindow, "Select a group to add the user to.");
+				}
+				redraw();
 			}			
 		});
 		addGroupButton.setPreferredSize(new Dimension(mainWindow.getWidth() / 4 - 20, 30));
@@ -95,7 +214,12 @@ public class AdminUiWindow extends JFrame implements UiWindow {
 		openUserViewButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				
+				List<User> users = admin.getUsers();
+				for(User u: users) {
+					if(u.getName().equals(selectedNode.toString())) {
+						NormalUserUiWindow.getInstance(u);
+					}
+				}
 			}			
 		});
 		openUserViewButton.setPreferredSize(new Dimension(mainWindow.getWidth() / 2 - 30, 30));
@@ -158,6 +282,7 @@ public class AdminUiWindow extends JFrame implements UiWindow {
 	
 	public void redraw() {
 		//update the user list
+		updateTree.updateUI();
 	}
 
 }

@@ -4,13 +4,25 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 
-public class Admin implements SingleUser {
+public class Admin implements AdminUser {
 	
 	private List<User> users = new ArrayList<User>();
 	private List<UserGroup> groups = new ArrayList<UserGroup>();
 	private List<Message> messages = new ArrayList<Message>(); 
 	
-	public String name = "Admin";
+	private String name = "Admin";
+	private static Admin admin;
+	
+	private Admin() {
+		groups.add(new UserGroup("Root"));
+	}
+	
+	public static AdminUser getInstance() {
+		if(admin == null) {
+			admin = new Admin();
+		}
+		return admin;
+	}
 	
 	public void addUser(User user) {
 		users.add(user);

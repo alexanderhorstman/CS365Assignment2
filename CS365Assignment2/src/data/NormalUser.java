@@ -12,7 +12,7 @@ public class NormalUser extends Observable implements SingleUser{
 	private List<User> following = new ArrayList<User>();
 	private List<Message> newsFeed = new ArrayList<Message>();
 	
-	public NormalUser(String name, Admin admin) {
+	public NormalUser(String name, AdminUser admin) {
 		this.name = name;
 		addObserver(this);
 		addObserver(admin);

@@ -15,20 +15,20 @@ import data.User;
 
 public class NormalUserUiWindow implements UiWindow {
 	
-	private  User user;
+	private static User user;
 	private DefaultListModel<String> followingModel;
 	private DefaultListModel<String> newsFeedModel;
 	private JFrame mainWindow;
-	private final Admin admin;
+	//private static Admin admin;
 	
-	public NormalUserUiWindow(User user, Admin admin) {
-		this.user = user;
-		this.admin = admin;
+	private NormalUserUiWindow(User newUser, Admin admin1) {
+		user = newUser;
+		admin = admin1;
 		createWindow();
 	}
 	
-	public UiWindow getInstance(User user) {
-		this.user = user;
+	public static UiWindow getInstance(User newUser) {
+		user = newUser;
 		return new NormalUserUiWindow(user, admin);
 	}
 	
