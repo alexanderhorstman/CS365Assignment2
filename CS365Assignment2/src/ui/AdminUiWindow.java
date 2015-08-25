@@ -316,6 +316,7 @@ public class AdminUiWindow implements UiWindow {
 		DefaultMutableTreeNode ashleyNode = new DefaultMutableTreeNode(ashley.getName());
 		DefaultMutableTreeNode jeremyNode = new DefaultMutableTreeNode(jeremy.getName());
 		DefaultMutableTreeNode johnNode = new DefaultMutableTreeNode(john.getName());
+		
 		//add all nodes to their appropriate places
 		root.add(classNode);
 		classNode.add(group1Node);
@@ -326,6 +327,7 @@ public class AdminUiWindow implements UiWindow {
 		group2Node.add(ashleyNode);
 		group2Node.add(jeremyNode);
 		group2Node.add(johnNode);
+		
 		//make all new nodes visible
 		userTree.makeVisible(new TreePath(classNode.getPath()));
 		userTree.makeVisible(new TreePath(group1Node.getPath()));
@@ -336,6 +338,7 @@ public class AdminUiWindow implements UiWindow {
 		userTree.makeVisible(new TreePath(ashleyNode.getPath()));
 		userTree.makeVisible(new TreePath(jeremyNode.getPath()));
 		userTree.makeVisible(new TreePath(johnNode.getPath()));
+		
 		//add groups and users to admin class
 		admin.addGroup(cs365);
 		admin.addUser(tim);
@@ -352,6 +355,7 @@ public class AdminUiWindow implements UiWindow {
 		group2.addUser(ashley);
 		group2.addUser(jeremy);
 		group2.addUser(john);
+		
 		//make each person in each group follow each other
 		tim.follow(jessica);
 		jessica.follow(tim);
@@ -367,6 +371,7 @@ public class AdminUiWindow implements UiWindow {
 		john.follow(ashley);
 		john.follow(jeremy);
 		john.follow(ben);
+		
 		//post some messages for students
 		ben.post(new Message(ben, "Finished Part 1 on the assignment."));
 		ashley.post(new Message(ashley, "Good job on Part 1, I finished Part 2 on the assignment."));

@@ -36,6 +36,12 @@ public class NormalUser extends Observable implements SingleUser{
 	public void update(Observable user, Object arg) {
 		if(arg instanceof Message) {
 			newsFeed.add(0, (Message) arg);
+			System.out.println("New Message: " + arg.toString());
+			System.out.println(name + "'s News Feed: ");
+			for(Message m: newsFeed) {
+				System.out.println(m.toString());
+			}
+			System.out.println();
 			if(uiWindow != null) {
 				uiWindow.redraw();
 			}			

@@ -105,7 +105,6 @@ public class NormalUserUiWindow implements UiWindow {
 			public void actionPerformed(ActionEvent arg0) {
 				((NormalUser) user).post(new Message(user, message.getText()));
 				redraw();
-				System.out.println("Post test. User: " + user.getName());
 			}			
 		});
 		tweetMessageButton.setPreferredSize(new Dimension(mainWindow.getWidth() / 2 - 20, 30));
